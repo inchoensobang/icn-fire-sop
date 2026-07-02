@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>인천소방 현장지원시스템</title>
+
+<style>
+body{
+    margin:0;
+    font-family:맑은 고딕, Arial;
+    background:#f2f4f8;
+}
+header{
+    background:#0b3d91;
+    color:white;
+    padding:22px;
+    text-align:center;
+    font-size:30px;
+    font-weight:bold;
+}
+.search{
+    text-align:center;
+    margin:25px;
+}
+.search input{
+    width:420px;
+    max-width:85%;
+    height:45px;
+    font-size:18px;
+    padding-left:15px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+.menu{
+    display:grid;
+    grid-template-columns:repeat(2,260px);
+    gap:22px;
+    justify-content:center;
+}
+.card{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 3px 10px rgba(0,0,0,.2);
+    text-align:center;
+}
+.card h2{
+    margin:10px 0;
+}
+button{
+    width:180px;
+    padding:12px;
+    margin-top:8px;
+    font-size:17px;
+    border:0;
+    border-radius:8px;
+    background:#0b3d91;
+    color:white;
+    cursor:pointer;
+}
+button:hover{
+    background:#d71920;
+}
+footer{
+    margin-top:45px;
+    text-align:center;
+    padding:20px;
+    color:#555;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+🚒 인천소방 현장지원시스템
+</header>
+
+<div class="search">
+<input placeholder="SOP 번호 검색 예: 208">
+</div>
+
+<div class="menu">
+
+<div class="card">
+🔥<br>
+<h2>화재대응 SOP</h2>
+<p>SOP 200~239</p>
+<button onclick="location.href='pdf/SOP208.pdf'">SOP208 열기</button>
+</div>
+
+<div class="card">
+🚑<br>
+<h2>구조 SOP</h2>
+<p>SOP 300~324</p>
+<button disabled>준비중</button>
+</div>
+
+<div class="card">
+🚑<br>
+<h2>구급 SOP</h2>
+<p>SOP 400~410</p>
+<button disabled>준비중</button>
+</div>
+
+<div class="card">
+📘<br>
+<h2>전체 SOP PDF</h2>
+<p>재난현장 표준작전절차 전체본</p>
+<button onclick="location.href='pdf/sop2023.pdf'">전체 SOP 열기</button>
+</div>
+
+</div>
+
+<footer>
+인천소방 현장지원시스템 Ver 1.1
+</footer>
+
+</body>
+</html>
