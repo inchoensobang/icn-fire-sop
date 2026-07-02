@@ -2,119 +2,316 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>인천소방 현장지원시스템</title>
 
 <style>
+*{box-sizing:border-box}
 body{
-    margin:0;
-    font-family:맑은 고딕, Arial;
-    background:#f2f4f8;
+  margin:0;
+  font-family:"맑은 고딕",Arial,sans-serif;
+  background:#f2f4f8;
+  color:#111;
 }
 header{
-    background:#0b3d91;
-    color:white;
-    padding:22px;
-    text-align:center;
-    font-size:30px;
-    font-weight:bold;
+  background:#0b3d91;
+  color:white;
+  padding:20px;
+  text-align:center;
+  font-size:30px;
+  font-weight:800;
 }
-.search{
-    text-align:center;
-    margin:25px;
+.wrap{
+  max-width:1050px;
+  margin:22px auto;
+  padding:0 14px;
 }
 .search input{
-    width:420px;
-    max-width:85%;
-    height:45px;
-    font-size:18px;
-    padding-left:15px;
-    border-radius:8px;
-    border:1px solid #ccc;
+  width:100%;
+  padding:16px;
+  font-size:19px;
+  border:1px solid #ccc;
+  border-radius:12px;
 }
-.menu{
-    display:grid;
-    grid-template-columns:repeat(2,260px);
-    gap:22px;
-    justify-content:center;
+.section{
+  margin-top:18px;
+  background:white;
+  border-radius:16px;
+  padding:18px;
+  box-shadow:0 3px 12px rgba(0,0,0,.12);
 }
-.card{
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 3px 10px rgba(0,0,0,.2);
-    text-align:center;
+.section h2{
+  margin:0 0 14px;
+  color:#0b3d91;
 }
-.card h2{
-    margin:10px 0;
+.sop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:13px;
+  border-bottom:1px solid #eee;
 }
-button{
-    width:180px;
-    padding:12px;
-    margin-top:8px;
-    font-size:17px;
-    border:0;
-    border-radius:8px;
-    background:#0b3d91;
-    color:white;
-    cursor:pointer;
+.sop:last-child{border-bottom:0}
+.sop b{
+  color:#d71920;
+  font-size:18px;
 }
-button:hover{
-    background:#d71920;
+.sop span{
+  font-size:17px;
+}
+.btn{
+  background:#0b3d91;
+  color:white;
+  border:0;
+  border-radius:9px;
+  padding:10px 15px;
+  font-size:15px;
+  cursor:pointer;
+}
+.btn:hover{background:#d71920}
+.btn.red{background:#d71920}
+.viewer{
+  display:none;
+}
+.viewer.active{
+  display:block;
+}
+.viewer-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:12px;
+}
+.viewer-title b{
+  color:#d71920;
+  font-size:20px;
+}
+.viewer-title div{
+  font-size:20px;
+  font-weight:700;
+}
+.nav{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  margin:12px 0;
+}
+.page-count{
+  font-weight:700;
+  color:#0b3d91;
+}
+.image-box{
+  background:#111;
+  border-radius:14px;
+  padding:10px;
+  text-align:center;
+}
+.image-box img{
+  max-width:100%;
+  max-height:78vh;
+  border-radius:8px;
+  background:white;
+}
+.help{
+  font-size:14px;
+  color:#666;
+  text-align:center;
+  margin-top:8px;
 }
 footer{
-    margin-top:45px;
-    text-align:center;
-    padding:20px;
-    color:#555;
+  text-align:center;
+  margin:35px;
+  color:#555;
+}
+@media(max-width:650px){
+  header{font-size:23px}
+  .sop{display:block}
+  .sop button{width:100%;margin-top:10px}
+  .viewer-head{display:block}
+  .viewer-head button{width:100%;margin-top:10px}
+  .btn{width:100%}
+  .nav{gap:8px}
 }
 </style>
 </head>
 
 <body>
 
-<header>
-🚒 인천소방 현장지원시스템
-</header>
+<header>🚒 인천소방 현장지원시스템</header>
 
-<div class="search">
-<input placeholder="SOP 번호 검색 예: 208">
-</div>
+<div class="wrap">
 
-<div class="menu">
+  <div class="search">
+    <input id="search" placeholder="SOP 번호 또는 제목 검색 예: 208, 호스, 차량, 특수현상">
+  </div>
 
-<div class="card">
-🔥<br>
-<h2>화재대응 SOP</h2>
-<p>SOP 200~239</p>
-<button onclick="location.href='pdf/SOP208.pdf'">SOP208 열기</button>
-</div>
+  <div id="listSection" class="section">
+    <h2>🔥 화재대응 SOP 200~243</h2>
+    <div id="list"></div>
+    <button class="btn red" onclick="openFullPdf()">📘 전체 SOP 원본 보기</button>
+  </div>
 
-<div class="card">
-🚑<br>
-<h2>구조 SOP</h2>
-<p>SOP 300~324</p>
-<button disabled>준비중</button>
-</div>
+  <div id="viewerSection" class="section viewer">
+    <div class="viewer-head">
+      <div class="viewer-title">
+        <b id="viewerNo"></b>
+        <div id="viewerTitle"></div>
+      </div>
+      <button class="btn" onclick="backToList()">← 목록으로</button>
+    </div>
 
-<div class="card">
-🚑<br>
-<h2>구급 SOP</h2>
-<p>SOP 400~410</p>
-<button disabled>준비중</button>
-</div>
+    <div class="nav">
+      <button class="btn" onclick="prevPage()">← 이전</button>
+      <span class="page-count" id="pageCount">1 / 1</span>
+      <button class="btn" onclick="nextPage()">다음 →</button>
+    </div>
 
-<div class="card">
-📘<br>
-<h2>전체 SOP PDF</h2>
-<p>재난현장 표준작전절차 전체본</p>
-<button onclick="location.href='pdf/sop2023.pdf'">전체 SOP 열기</button>
-</div>
+    <div class="image-box">
+      <img id="sopImage" src="" alt="SOP 이미지" onclick="toggleImageZoom()">
+    </div>
+
+    <div class="help">이미지를 누르면 새 창에서 크게 볼 수 있습니다.</div>
+  </div>
 
 </div>
 
-<footer>
-인천소방 현장지원시스템 Ver 1.1
-</footer>
+<footer>인천소방 현장지원시스템 Ver 1.3</footer>
+
+<script>
+const baseName = "'26.3. 재난현장 표준작전절차(SOP)_PDF_";
+
+const sopList = [
+  {no:"200", title:"화재대응 공통표준작전절차", folder:"SOP200_화재대응공통표준작전절차", start:40, end:45},
+  {no:"201", title:"화재대응 안전관리 표준작전절차", folder:"SOP201_화재대응안전관리표준작전절차", start:46, end:48},
+  {no:"202", title:"화재대응 일반절차", folder:"SOP202_화재대응일반절차", start:49, end:52},
+  {no:"203", title:"인명구조 작전절차", folder:"SOP203_인명구조작전절차", start:53, end:55},
+  {no:"204", title:"대원고립상황 대응절차", folder:"SOP204_대원고립상황대응절차", start:56, end:58},
+  {no:"205", title:"낙하물·붕괴 위험 대응절차", folder:"SOP205_낙하물붕괴위험대응절차", start:59, end:61},
+  {no:"206", title:"방수임무 수행절차", folder:"SOP206_방수임무수행절차", start:62, end:65},
+  {no:"207", title:"방수포 및 사다리 활용절차", folder:"SOP207_방수포및사다리활용절차", start:66, end:68},
+  {no:"208", title:"소방호스 연장 표준작전절차", folder:"SOP208_소방호스연장표준작전절차", start:69, end:72},
+  {no:"209", title:"굴절차 및 고가사다리차 활용절차", folder:"SOP209_굴절차및고가사다리차활용절차", start:73, end:75},
+  {no:"210", title:"특수현상 징후 및 대응절차", folder:"SOP210_특수현상징후및대응절차", start:76, end:80},
+  {no:"211", title:"헬기동원 화재진압 대응절차", folder:"SOP211_헬기동원화재진압대응절차", start:81, end:83},
+  {no:"212", title:"일반 건축물화재 대응절차", folder:"SOP212_일반건축물화재대응절차", start:84, end:87},
+  {no:"213", title:"아파트화재 대응절차", folder:"SOP213_아파트화재대응절차", start:88, end:91},
+  {no:"214", title:"주택화재 대응절차", folder:"SOP214_주택화재대응절차", start:92, end:94},
+  {no:"215", title:"지하철화재 대응절차", folder:"SOP215_지하철화재대응절차", start:95, end:98},
+  {no:"216", title:"지하가화재 대응절차", folder:"SOP216_지하가화재대응절차", start:99, end:101},
+  {no:"217", title:"지하층화재 대응절차", folder:"SOP217_지하층화재대응절차", start:102, end:104},
+  {no:"218", title:"지하공동구화재 대응절차", folder:"SOP218_지하공동구화재대응절차", start:105, end:107},
+  {no:"219", title:"도로터널화재 대응절차", folder:"SOP219_도로터널화재대응절차", start:108, end:110},
+  {no:"220", title:"지하 압기공사장화재 대응절차", folder:"SOP220_지하압기공사장화재대응절차", start:111, end:113},
+  {no:"221", title:"금속화재 대응절차", folder:"SOP221_금속화재대응절차", start:114, end:116},
+  {no:"222", title:"고층건물 화재 대응절차", folder:"SOP222_고층건물화재대응절차", start:117, end:119},
+  {no:"223", title:"초고층건물 화재 대응절차", folder:"SOP223_초고층건물화재대응절차", start:120, end:122},
+  {no:"224", title:"산림화재 대응절차", folder:"SOP224_산림화재대응절차", start:123, end:125},
+  {no:"225", title:"차량화재 대응절차", folder:"SOP225_차량화재대응절차", start:126, end:128},
+  {no:"226", title:"공현 트러스 구조물화재 대응절차", folder:"SOP226_공현트러스구조물화재대응절차", start:129, end:131},
+  {no:"227", title:"선박화재 대응절차", folder:"SOP227_선박화재대응절차", start:132, end:134},
+  {no:"228", title:"목조문화재 화재 대응절차", folder:"SOP228_목조문화재화재대응절차", start:135, end:137},
+  {no:"229", title:"석유화학단지 화재 대응절차", folder:"SOP229_석유화학단지화재대응절차", start:138, end:140},
+  {no:"230", title:"화력발전소 화재 대응절차", folder:"SOP230_화력발전소화재대응절차", start:141, end:143},
+  {no:"231", title:"원자력발전소 화재 대응절차", folder:"SOP231_원자력발전소화재대응절차", start:144, end:146},
+  {no:"232", title:"가연성 외장재 필로티건물 화재 대응절차", folder:"SOP232_가연성외장재필로티건물화재대응절차", start:147, end:149},
+  {no:"233", title:"전통시장 화재 대응절차", folder:"SOP233_전통시장화재대응절차", start:150, end:152},
+  {no:"234", title:"항공기 화재 대응절차", folder:"SOP234_항공기화재대응절차", start:153, end:155},
+  {no:"235", title:"소방시설 활용절차방법", folder:"SOP235_소방시설활용절차방법", start:156, end:158},
+  {no:"236", title:"석유 등 위험물 저장시설 화재 대응절차", folder:"SOP236_석유등위험물저장시설화재대응절차", start:159, end:161},
+  {no:"237", title:"가스저장시설 화재 대응절차", folder:"SOP237_가스저장시설화재대응절차", start:162, end:164},
+  {no:"238", title:"에너지저장장치(ESS) 화재 대응절차", folder:"SOP238_에너지저장장치ESS화재대응절차", start:165, end:167},
+  {no:"239", title:"데이터센터 화재 대응절차", folder:"SOP239_데이터센터화재대응절차", start:168, end:170},
+  {no:"240", title:"샌드위치패널공장창고 화재 대응절차", folder:"SOP240_샌드위치패널공장창고화재대응절차", start:171, end:173},
+  {no:"241", title:"친환경차량화재 대응절차", folder:"SOP241_친환경차량화재대응절차", start:174, end:176},
+  {no:"242", title:"리튬배터리공장창고 화재 대응절차", folder:"SOP242_리튬배터리공장창고화재대응절차", start:177, end:179},
+  {no:"243", title:"대용량포방사시스템 화재 대응절차", folder:"SOP243_대용량포방사시스템화재대응절차", start:180, end:182}
+];
+
+let currentSop = null;
+let currentPage = 0;
+
+function imagePath(sop, pageNo){
+  return encodeURI(`PDF/${sop.folder}/${baseName}${pageNo}.jpg`);
+}
+
+function openFullPdf(){
+  window.open(encodeURI("PDF/SOP2026.pdf"), "_blank");
+}
+
+function render(keyword=""){
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+  const key = keyword.replace(/\s/g,"").toLowerCase();
+
+  sopList
+    .filter(s => (`${s.no}${s.title}`).replace(/\s/g,"").toLowerCase().includes(key))
+    .forEach(s => {
+      const div = document.createElement("div");
+      div.className = "sop";
+      div.innerHTML = `
+        <div><b>SOP${s.no}</b> <span>${s.title}</span></div>
+        <button onclick="openSop('${s.no}')">보기</button>
+      `;
+      list.appendChild(div);
+    });
+}
+
+function openSop(no){
+  currentSop = sopList.find(s => s.no === no);
+  currentPage = currentSop.start;
+
+  document.getElementById("listSection").style.display = "none";
+  document.getElementById("viewerSection").classList.add("active");
+  document.getElementById("viewerNo").textContent = `SOP${currentSop.no}`;
+  document.getElementById("viewerTitle").textContent = currentSop.title;
+
+  updateImage();
+  window.scrollTo(0,0);
+}
+
+function updateImage(){
+  const img = document.getElementById("sopImage");
+  img.src = imagePath(currentSop, currentPage);
+  document.getElementById("pageCount").textContent =
+    `${currentPage - currentSop.start + 1} / ${currentSop.end - currentSop.start + 1}`;
+}
+
+function prevPage(){
+  if(!currentSop) return;
+  if(currentPage > currentSop.start){
+    currentPage--;
+    updateImage();
+  }
+}
+
+function nextPage(){
+  if(!currentSop) return;
+  if(currentPage < currentSop.end){
+    currentPage++;
+    updateImage();
+  }
+}
+
+function backToList(){
+  document.getElementById("viewerSection").classList.remove("active");
+  document.getElementById("listSection").style.display = "block";
+  currentSop = null;
+  window.scrollTo(0,0);
+}
+
+function toggleImageZoom(){
+  const img = document.getElementById("sopImage");
+  if(img.src){
+    window.open(img.src, "_blank");
+  }
+}
+
+document.getElementById("search").addEventListener("input", e => render(e.target.value));
+render();
+</script>
 
 </body>
 </html>
